@@ -2,3 +2,16 @@
 ? .gitignore
 ? status.log
 ? up.log
+P sbin/ipsecctl/Makefile
+U sbin/ipsecctl/ike63.in
+U sbin/ipsecctl/ike63.ok
+U sbin/ipsecctl/ike64.in
+U sbin/ipsecctl/ike64.ok
+U sbin/ipsecctl/ike65.in
+U sbin/ipsecctl/ike65.ok
+U sbin/ipsecctl/ike66.in
+U sbin/ipsecctl/ike66.ok
+U sbin/ipsecctl/ike67.in
+U sbin/ipsecctl/ike67.ok
+U sbin/ipsecctl/ike68.in
+U sbin/ipsecctl/ike68.ok
