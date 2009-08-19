@@ -3,23 +3,8 @@
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modified:   sbin/ipsecctl/Makefile
 #	modified:   status.log
 #	modified:   up.log
+#	modified:   usr.bin/ssh/Makefile
 #
-# Untracked files:
-#   (use "git add <file>..." to include in what will be committed)
-#
-#	sbin/ipsecctl/ike63.in
-#	sbin/ipsecctl/ike63.ok
-#	sbin/ipsecctl/ike64.in
-#	sbin/ipsecctl/ike64.ok
-#	sbin/ipsecctl/ike65.in
-#	sbin/ipsecctl/ike65.ok
-#	sbin/ipsecctl/ike66.in
-#	sbin/ipsecctl/ike66.ok
-#	sbin/ipsecctl/ike67.in
-#	sbin/ipsecctl/ike67.ok
-#	sbin/ipsecctl/ike68.in
-#	sbin/ipsecctl/ike68.ok
 no changes added to commit (use "git add" and/or "git commit -a")
