@@ -1,45 +1,6 @@
-Host key fingerprint is 3f:44:14:35:1b:65:cc:cb:da:17:6d:1d:e1:b4:a6:36
-+--[ RSA 1024]----+
-|          oo++oo.|
-|         .   ==..|
-|          . .. =+|
-|         .    =.+|
-|        S .  E ..|
-|         o  o o .|
-|          o    . |
-|           .     |
-|                 |
-+-----------------+
-
 ? .git
 ? .gitignore
 ? status.log
 ? up.log
-P sbin/pfctl/Makefile
-P sbin/pfctl/pf16.in
-P sbin/pfctl/pf18.in
-P sbin/pfctl/pf20.in
-U sbin/pfctl/pf27.in
-P sbin/pfctl/pf36.in
-P sbin/pfctl/pf48.in
-P sbin/pfctl/pf51.in
-P sbin/pfctl/pf66.in
-P sbin/pfctl/pf69.in
-P sbin/pfctl/pf84.in
-cvs server: sbin/pfctl/pfail10.in is no longer in the repository
-cvs server: sbin/pfctl/pfail10.ok is no longer in the repository
-P sbin/pfctl/pfail12.in
-P sbin/pfctl/pfail12.ok
 P sbin/pfctl/pfail19.in
-U sbin/pfctl/pfail20.in
-P sbin/pfctl/pfail41.in
-P sbin/pfctl/pfail49.in
-U sbin/pfctl/pfail8.in
-cvs server: sbin/pfctl/pfail9.in is no longer in the repository
-cvs server: sbin/pfctl/pfail9.ok is no longer in the repository
-P sbin/pfctl/pfopt2.in
-P sbin/pfctl/pfopt3.in
-cvs server: sbin/pfctl/pfopt4.in is no longer in the repository
-cvs server: sbin/pfctl/pfopt4.ok is no longer in the repository
-cvs server: sbin/pfctl/pfopt4.opts is no longer in the repository
-P sbin/pfctl/pfopt5.in
+U sbin/pfctl/pfail19.ok

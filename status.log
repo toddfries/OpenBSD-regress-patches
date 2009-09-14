@@ -1,37 +1,10 @@
 # On branch master
 # Changed but not updated:
-#   (use "git add/rm <file>..." to update what will be committed)
+#   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modified:   .gitignore
-#	modified:   sbin/pfctl/Makefile
-#	modified:   sbin/pfctl/pf16.in
-#	modified:   sbin/pfctl/pf18.in
-#	modified:   sbin/pfctl/pf20.in
-#	modified:   sbin/pfctl/pf27.in
-#	modified:   sbin/pfctl/pf36.in
-#	modified:   sbin/pfctl/pf48.in
-#	modified:   sbin/pfctl/pf51.in
-#	modified:   sbin/pfctl/pf66.in
-#	modified:   sbin/pfctl/pf69.in
-#	modified:   sbin/pfctl/pf84.in
-#	deleted:    sbin/pfctl/pfail10.in
-#	deleted:    sbin/pfctl/pfail10.ok
-#	modified:   sbin/pfctl/pfail12.in
-#	modified:   sbin/pfctl/pfail12.ok
 #	modified:   sbin/pfctl/pfail19.in
-#	modified:   sbin/pfctl/pfail20.in
-#	modified:   sbin/pfctl/pfail41.in
-#	modified:   sbin/pfctl/pfail49.in
-#	modified:   sbin/pfctl/pfail8.in
-#	deleted:    sbin/pfctl/pfail9.in
-#	deleted:    sbin/pfctl/pfail9.ok
-#	modified:   sbin/pfctl/pfopt2.in
-#	modified:   sbin/pfctl/pfopt3.in
-#	deleted:    sbin/pfctl/pfopt4.in
-#	deleted:    sbin/pfctl/pfopt4.ok
-#	deleted:    sbin/pfctl/pfopt4.opts
-#	modified:   sbin/pfctl/pfopt5.in
+#	modified:   sbin/pfctl/pfail19.ok
 #	modified:   status.log
 #	modified:   up.log
 #
