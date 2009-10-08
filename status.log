@@ -1,58 +1,9 @@
 # On branch master
 # Changed but not updated:
-#   (use "git add/rm <file>..." to update what will be committed)
+#   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modified:   lib/libc/getaddrinfo/answer
-#	modified:   sbin/pfctl/Makefile
-#	modified:   sbin/pfctl/pf13.in
-#	modified:   sbin/pfctl/pf16.in
-#	modified:   sbin/pfctl/pf16.ok
-#	modified:   sbin/pfctl/pf17.in
-#	modified:   sbin/pfctl/pf18.in
-#	modified:   sbin/pfctl/pf18.ok
-#	modified:   sbin/pfctl/pf19.in
-#	modified:   sbin/pfctl/pf19.loaded
-#	modified:   sbin/pfctl/pf19.ok
-#	modified:   sbin/pfctl/pf19.optimized
-#	modified:   sbin/pfctl/pf20.loaded
-#	modified:   sbin/pfctl/pf20.ok
-#	modified:   sbin/pfctl/pf20.optimized
-#	modified:   sbin/pfctl/pf27.ok
-#	modified:   sbin/pfctl/pf29.in
-#	modified:   sbin/pfctl/pf29.ok
-#	modified:   sbin/pfctl/pf46.in
-#	modified:   sbin/pfctl/pf46.ok
-#	modified:   sbin/pfctl/pf48.ok
-#	modified:   sbin/pfctl/pf51.ok
-#	modified:   sbin/pfctl/pf66.ok
-#	modified:   sbin/pfctl/pf69.ok
-#	modified:   sbin/pfctl/pf84.ok
-#	modified:   sbin/pfctl/pf98.in
-#	modified:   sbin/pfctl/pf98.ok
-#	modified:   sbin/pfctl/pfail23.in
-#	deleted:    sbin/pfctl/pfail24.in
-#	deleted:    sbin/pfctl/pfail24.ok
-#	deleted:    sbin/pfctl/pfail26.in
-#	deleted:    sbin/pfctl/pfail26.ok
-#	modified:   sbin/pfctl/pfail27.in
-#	modified:   sbin/pfctl/pfail27.ok
-#	deleted:    sbin/pfctl/pfail28.in
-#	deleted:    sbin/pfctl/pfail28.ok
-#	modified:   sbin/pfctl/pfail30.in
-#	modified:   sbin/pfctl/pfail30.ok
-#	modified:   sbin/pfctl/pfail38.in
-#	modified:   sbin/pfctl/pfail38.ok
-#	modified:   sbin/pfctl/pfail39.in
-#	deleted:    sbin/pfctl/pfail51.in
-#	deleted:    sbin/pfctl/pfail51.ok
-#	modified:   sbin/pfctl/pfopt2.in
-#	modified:   sbin/pfctl/pfopt3.in
-#	modified:   sbin/pfctl/pfopt5.in
-#	modified:   sbin/pfctl/pfopt5.ok
 #	modified:   status.log
-#	modified:   sys/kern/extent/extest.exp
-#	modified:   sys/kern/extent/tests
 #	modified:   up.log
 #
 no changes added to commit (use "git add" and/or "git commit -a")
