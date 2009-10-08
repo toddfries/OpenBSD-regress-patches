@@ -1,2 +1,32 @@
-ssh: connect to host cvs.openbsd.org port 22: Connection timed out
-cvs [update aborted]: end of file from server (consult above messages if any)
+? .git
+? .gitignore
+? status.log
+? up.log
+P sbin/pfctl/pf13.loaded
+U sbin/pfctl/pf13.ok
+P sbin/pfctl/pf13.optimized
+P sbin/pfctl/pf16.loaded
+P sbin/pfctl/pf16.optimized
+P sbin/pfctl/pf18.loaded
+P sbin/pfctl/pf18.optimized
+P sbin/pfctl/pf29.loaded
+P sbin/pfctl/pf29.optimized
+P sbin/pfctl/pf46.loaded
+P sbin/pfctl/pf46.optimized
+P sbin/pfctl/pf48.loaded
+P sbin/pfctl/pf48.optimized
+P sbin/pfctl/pf66.loaded
+P sbin/pfctl/pf66.optimized
+P sbin/pfctl/pf69.loaded
+P sbin/pfctl/pf69.optimized
+P sbin/pfctl/pf76.in
+P sbin/pfctl/pf76.loaded
+U sbin/pfctl/pf76.ok
+P sbin/pfctl/pf76.optimized
+U sbin/pfctl/pf80.in
+P sbin/pfctl/pf80.loaded
+U sbin/pfctl/pf80.ok
+P sbin/pfctl/pf80.optimized
+P sbin/pfctl/pf84.loaded
+P sbin/pfctl/pf84.optimized
+P usr.bin/ssh/ssh2putty.sh

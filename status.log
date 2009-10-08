@@ -1,8 +1,37 @@
 # On branch master
+# Your branch is ahead of 'origin/master' by 1 commit.
+#
 # Changed but not updated:
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
+#	modified:   sbin/pfctl/pf13.loaded
+#	modified:   sbin/pfctl/pf13.ok
+#	modified:   sbin/pfctl/pf13.optimized
+#	modified:   sbin/pfctl/pf16.loaded
+#	modified:   sbin/pfctl/pf16.optimized
+#	modified:   sbin/pfctl/pf18.loaded
+#	modified:   sbin/pfctl/pf18.optimized
+#	modified:   sbin/pfctl/pf29.loaded
+#	modified:   sbin/pfctl/pf29.optimized
+#	modified:   sbin/pfctl/pf46.loaded
+#	modified:   sbin/pfctl/pf46.optimized
+#	modified:   sbin/pfctl/pf48.loaded
+#	modified:   sbin/pfctl/pf48.optimized
+#	modified:   sbin/pfctl/pf66.loaded
+#	modified:   sbin/pfctl/pf66.optimized
+#	modified:   sbin/pfctl/pf69.loaded
+#	modified:   sbin/pfctl/pf69.optimized
+#	modified:   sbin/pfctl/pf76.in
+#	modified:   sbin/pfctl/pf76.loaded
+#	modified:   sbin/pfctl/pf76.ok
+#	modified:   sbin/pfctl/pf76.optimized
+#	modified:   sbin/pfctl/pf80.in
+#	modified:   sbin/pfctl/pf80.loaded
+#	modified:   sbin/pfctl/pf80.ok
+#	modified:   sbin/pfctl/pf80.optimized
+#	modified:   sbin/pfctl/pf84.loaded
+#	modified:   sbin/pfctl/pf84.optimized
 #	modified:   status.log
 #	modified:   up.log
 #
