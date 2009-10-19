@@ -2,8 +2,3 @@
 ? .gitignore
 ? status.log
 ? up.log
-P sys/kern/extent/extest.exp
-P sys/kern/extent/tests
-P usr.bin/m4/Makefile
-U usr.bin/m4/gnuprefix.m4
-U usr.bin/m4/gnuprefix.out
