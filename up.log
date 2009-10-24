@@ -2,3 +2,5 @@
 ? .gitignore
 ? status.log
 ? up.log
+U usr.bin/sed/hanoi.in
+U usr.bin/sed/sierpinski.in
