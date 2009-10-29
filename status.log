@@ -3,12 +3,13 @@
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
+#	modified:   lib/libc/db/dbtest.c
+#	modified:   lib/libc/hsearch/hsearchtest.c
 #	modified:   status.log
 #	modified:   up.log
 #
 # Untracked files:
 #   (use "git add <file>..." to include in what will be committed)
 #
-#	usr.bin/sed/hanoi.in
-#	usr.bin/sed/sierpinski.in
+#	usr.bin/mandoc/
 no changes added to commit (use "git add" and/or "git commit -a")
