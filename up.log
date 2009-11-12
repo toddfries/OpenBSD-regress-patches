@@ -2,9 +2,3 @@
 ? .gitignore
 ? status.log
 ? up.log
-P usr.bin/make/Makefile
-U usr.bin/make/mk32
-U usr.bin/make/t32.out
-U usr.bin/make/t33.out
-U usr.bin/make/t34.out
-U usr.bin/make/t35.out

@@ -5,14 +5,5 @@
 #
 #	modified:   status.log
 #	modified:   up.log
-#	modified:   usr.bin/make/Makefile
 #
-# Untracked files:
-#   (use "git add <file>..." to include in what will be committed)
-#
-#	usr.bin/make/mk32
-#	usr.bin/make/t32.out
-#	usr.bin/make/t33.out
-#	usr.bin/make/t34.out
-#	usr.bin/make/t35.out
 no changes added to commit (use "git add" and/or "git commit -a")
