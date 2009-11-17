@@ -2,3 +2,8 @@
 ? .gitignore
 ? status.log
 ? up.log
+P usr.sbin/pkg_add/Makefile
+U usr.sbin/pkg_add/list
+U usr.sbin/pkg_add/list.out
+U usr.sbin/pkg_add/myadd
+U usr.sbin/pkg_add/mycreate
