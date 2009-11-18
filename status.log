@@ -5,13 +5,5 @@
 #
 #	modified:   status.log
 #	modified:   up.log
-#	modified:   usr.sbin/pkg_add/Makefile
 #
-# Untracked files:
-#   (use "git add <file>..." to include in what will be committed)
-#
-#	usr.sbin/pkg_add/list
-#	usr.sbin/pkg_add/list.out
-#	usr.sbin/pkg_add/myadd
-#	usr.sbin/pkg_add/mycreate
 no changes added to commit (use "git add" and/or "git commit -a")
