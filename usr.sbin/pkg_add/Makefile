@@ -1,8 +1,8 @@
-# $OpenBSD: Makefile,v 1.16 2009/11/22 12:57:35 espie Exp $
+# $OpenBSD: Makefile,v 1.19 2009/12/03 18:45:50 espie Exp $
 
 REGRESS_TARGETS=pkgnames depends-check longnames always-update \
 	collision-check3 partial-update-test conflict-update \
-	merge-update
+	merge-update split-update
 
 PKG_ADD=perl ${.CURDIR}/myadd
 PKG_CREATE=perl ${.CURDIR}/mycreate
@@ -11,7 +11,7 @@ LONG2=iamanotherreallygfilenamethatcantberepresentedcorrectlyinatararchivebutwew
 LONG3=iamanotherreallylonglinkthatcantberepresentedcorrectlyinatararchivebutwewantittohappenanywaysohmygodaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa42
 LONG4=iamanotherreallylonghardlinkthatcantberepresentedcorrectlyinatararchivebutwewantittohappenanywaysohmygodaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa42
 
-.for i in 1 2 3 4 5 6 7 8 9 10 11 12
+.for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
 S$i ?= ${.OBJDIR}/src$i
 SRC$i ?= ${S$i}/usr/local
 D$i ?= ${.OBJDIR}/dest$i
@@ -96,6 +96,12 @@ merge-update: old/m-0.0.tgz old/n-0.0.tgz new/m-1.0.tgz new/n-1.0.tgz
 	ROOT=${D12} PKG_PATH=${.OBJDIR}/new ${PKG_ADD} -u n
 	PKG_DBDIR=${D12}/pkgdb pkg_info -q|diff - ${.CURDIR}/list4.out
 
+split-update: old/o-0.0.tgz new/o-1.0.tgz new/p-0.0.tgz
+	-rm -rf ${D13}
+	ROOT=${D13} PKG_PATH=${.OBJDIR}/old ${PKG_ADD} o
+	ROOT=${D13} PKG_PATH=${.OBJDIR}/new ${PKG_ADD} -u o
+	PKG_DBDIR=${D13}/pkgdb pkg_info -q |diff - ${.CURDIR}/list5.out
+
 plist1:
 	@echo "@owner "`whoami` >$@
 	@echo ${LONG1} >>$@
@@ -134,13 +140,33 @@ plist7:
 	@echo "@conflict m-<1.0" >$@
 	@echo "@pkgpath test/m" >>$@
 
+plist-p/PLIST:
+	@mkdir -p ${@D}
+	@echo "@conflict o-<1.0" >$@
+	@echo "@pkgpath test/o" >>$@
+	@echo "@owner "`whoami` >>$@
+	@echo "%%SHARED%%" >>$@
+
+plist-p/PFRAG.shared:
+	@mkdir -p ${@D}
+	@echo '@lib lib/libcoincoin.so.$${LIBcoincoin_VERSION}' >$@
+
 old/a-0.0.tgz:
 	${PKG_CREATE} -P'test/b:b-*:b-0.0' -f ${.CURDIR}/empty $@
 
 new/a-1.0.tgz old/b-0.0.tgz old/i-0.0.tgz old/j-0.0.tgz new/j-1.0.tgz \
 new/i-1.0.tgz old/k-0.0.tgz old/l-0.0.tgz new/l-1.0.tgz old/m-0.0.tgz \
-old/n-0.0.tgz new/m-1.0.tgz:
+old/n-0.0.tgz new/m-1.0.tgz old/o-0.0.tgz:
 	${PKG_CREATE} -f ${.CURDIR}/empty $@
+
+new/o-1.0.tgz:
+	${PKG_CREATE} -P'test/p:p-*:p-0.0' -W'coincoin.0.0' -f ${.CURDIR}/empty $@
+
+new/p-0.0.tgz: p/PLIST p/PFRAG.shared
+	mkdir -p ${SRC13}/lib
+	@touch ${SRC13}/lib/libcoincoin.so.0.0
+	${PKG_CREATE} -B src13 -DSHARED_LIBS=1 -DLIBcoincoin_VERSION=0.0 -f p/PLIST $@
+
 
 new/b-1.0.tgz:
 	${PKG_CREATE} -P'test/a:a-*:a-1.0' -f ${.CURDIR}/empty $@
