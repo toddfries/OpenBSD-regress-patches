@@ -1,6 +1,6 @@
-# $OpenBSD: Makefile,v 1.30 2010/01/03 23:51:40 espie Exp $
+# $OpenBSD: Makefile,v 1.33 2010/01/10 16:06:10 espie Exp $
 
-REGRESS_TARGETS=pkgnames depends-check longnames update-check1 \
+REGRESS_TARGETS=pkgnames signatures depends-check longnames update-check1 \
 	collision-check3 partial-update-test conflict-update \
 	merge-update split-update big-merge family-circus missing \
 	lib-report1 lib-report2 lib-report3 loop1
@@ -21,6 +21,11 @@ DEST$i ?= ${D$i}/usr/local
 
 pkgnames:
 	perl ${.CURDIR}/check-name
+
+signatures: 
+	-rm -f signatures.out
+	perl ${.CURDIR}/check-sig 2>signatures.out
+	diff -u signatures.out ${.CURDIR}/signatures.ref
 
 depends-check: rep0/a-0.tgz rep0/b-0.tgz rep1/a-1.tgz rep1/b-1.tgz
 	@-rm -rf ${D1}
@@ -118,7 +123,7 @@ big-merge: rep0/q1-0.tgz rep0/q2-0.tgz rep0/q3-0.tgz rep0/q4-0.tgz \
 family-circus: rep0/glib-0.tgz rep0/fam-0.tgz rep1/fam-1.tgz rep1/glib-1.tgz rep1/gamin-0.tgz
 	@-rm -rf ${D15}
 	@ROOT=${D15} PKG_PATH=${.OBJDIR}/rep0 ${PKG_ADD} glib
-	@ROOT=${D15} PKG_PATH=${.OBJDIR}/rep1 ${PKG_ADD} -F updatedepends -u glib
+	@ROOT=${D15} PKG_PATH=${.OBJDIR}/rep1 ${PKG_ADD} -u glib
 
 missing: rep1/missa-0.tgz rep1/missb-0.tgz rep1/missc-0.tgz rep1/missd-0.tgz rep1/missf-0.tgz
 	@-rm -rf ${D16}
@@ -212,10 +217,10 @@ rep1/o-1.tgz:
 	@${PKG_CREATE} -P't/p:p-*:p-0' -W'coincoin.0.0' -f ${.CURDIR}/empty $@
 
 rep1/o1-1.tgz:
-	@${PKG_CREATE} -P't/p1:p1-*:p1-0' -W'coincoin.0' -f ${.CURDIR}/empty $@
+	@${PKG_CREATE} -DREGRESSION_TESTING -P't/p1:p1-*:p1-0' -W'coincoin.0' -f ${.CURDIR}/empty $@
 
 rep1/o2-1.tgz:
-	@${PKG_CREATE} -P't/p2:p2-*:p2-0' -W'coincoin.0' -f ${.CURDIR}/empty $@
+	@${PKG_CREATE} -DREGRESSION_TESTING -P't/p2:p2-*:p2-0' -W'coincoin.0' -f ${.CURDIR}/empty $@
 
 rep0/o3-0.tgz:
 	@${PKG_CREATE} -W'unlikelylibraryname.0.0' -f ${.CURDIR}/empty $@
@@ -228,7 +233,7 @@ rep1/p-0.tgz rep1/p1-0.tgz: plist8
 rep1/p2-0.tgz: plist8
 	@mkdir -p ${SRC14}/lib
 	@touch ${SRC14}/lib/libcoincoin.so.0
-	@${PKG_CREATE} -B src14 -DLIBcoincoin_VERSION=0 -f plist8 $@
+	@${PKG_CREATE} -DREGRESSION_TESTING -B src14 -DLIBcoincoin_VERSION=0 -f plist8 $@
 
 rep1/b-1.tgz:
 	@${PKG_CREATE} -P't/a:a-*:a-1' -f ${.CURDIR}/empty $@
@@ -354,6 +359,6 @@ rep0/tk-8.5.7.tgz:
 	collision-check1 collision-check2 collision-check4 collision-check5
 
 clean:
-	-rm -rf rep* dest* plist* src*
+	-rm -rf rep* dest* plist* src* signatures.out
 
 .include <bsd.regress.mk>
