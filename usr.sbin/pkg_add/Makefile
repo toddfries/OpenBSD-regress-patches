@@ -1,7 +1,7 @@
-# $OpenBSD: Makefile,v 1.33 2010/01/10 16:06:10 espie Exp $
+# $OpenBSD: Makefile,v 1.35 2010/01/14 19:38:37 espie Exp $
 
 REGRESS_TARGETS=pkgnames signatures depends-check longnames update-check1 \
-	collision-check3 partial-update-test conflict-update \
+	collision-check3 collision-check5 partial-update-test conflict-update \
 	merge-update split-update big-merge family-circus missing \
 	lib-report1 lib-report2 lib-report3 loop1
 
@@ -12,7 +12,7 @@ LONG2=iamanotherreallygfilenamethatcantberepresentedcorrectlyinatararchivebutwew
 LONG3=iamanotherreallylonglinkthatcantberepresentedcorrectlyinatararchivebutwewantittohappenanywaysohmygodaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa42
 LONG4=iamanotherreallylonghardlinkthatcantberepresentedcorrectlyinatararchivebutwewantittohappenanywaysohmygodaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa42
 
-.for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+.for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
 S$i ?= ${.OBJDIR}/src$i
 SRC$i ?= ${S$i}/usr/local
 D$i ?= ${.OBJDIR}/dest$i
@@ -31,7 +31,7 @@ depends-check: rep0/a-0.tgz rep0/b-0.tgz rep1/a-1.tgz rep1/b-1.tgz
 	@-rm -rf ${D1}
 	@ROOT=${D1} ${PKG_ADD} rep0/a-0.tgz rep0/b-0.tgz
 	@ROOT=${D1} PKG_PATH=${.OBJDIR}/rep1 ${PKG_ADD} -u a b
-	@ROOT=${D1} PKG_PATH=${.OBJDIR}/rep0 ${PKG_ADD} -F downgrade -u a b
+	@ROOT=${D1} PKG_PATH=${.OBJDIR}/rep0 ${PKG_ADD} -D downgrade -u a b
 
 longnames: rep1/c-0.tgz
 	@-rm -rf ${D2}
@@ -56,20 +56,24 @@ collision-check3: rep1/d-0.tgz rep1/f-0.tgz
 	@-rm -rf ${D5}
 	@ROOT=${D5} ${PKG_ADD} rep1/d-0.tgz rep1/f-0.tgz
 	@-rm -rf ${D5}/pkgdb/d-0
-	@ROOT=${D5} ${PKG_ADD} -F repair rep1/d-0.tgz
+	@ROOT=${D5} ${PKG_ADD} -D repair rep1/d-0.tgz
 	PKG_DBDIR=${D5}/pkgdb pkg_info -qR d
 
 collision-check4: rep1/d-0.tgz rep1/e-0.tgz
 	@-rm -rf ${D6}
 	@ROOT=${D6} ${PKG_ADD} rep1/d-0.tgz
 	@-rm -rf ${D6}/pkgdb/d-0
-	@ROOT=${D6} ${PKG_ADD} -F repair rep1/e-0.tgz
+	@ROOT=${D6} ${PKG_ADD} -D repair rep1/e-0.tgz
+
+collision-check5: rep1/d-0.tgz rep1/e-0.tgz
+	@-rm -rf ${D21}
+	@ROOT=${D21} ${PKG_ADD} -n rep1/d-0.tgz rep1/e-0.tgz
 
 collision-check5: rep1/d-0.tgz rep1/e-0.tgz
 	@-rm -rf ${D7}
 	@ROOT=${D7} ${PKG_ADD} rep1/d-0.tgz
 	@-rm -rf ${D7}/pkgdb/d-0
-	@ROOT=${D7} ${PKG_ADD} -F removecollisions rep1/d-0.tgz
+	@ROOT=${D7} ${PKG_ADD} -D removecollisions rep1/d-0.tgz
 
 update-check1: rep0/g-0.tgz rep1/g-0.tgz rep0/ga-0.tgz rep1/ga-0.tgz \
 	rep0/gb-0.tgz rep1/gb-0p0.tgz rep0/gc-0.tgz rep1/gc-0.tgz \
@@ -118,7 +122,7 @@ big-merge: rep0/q1-0.tgz rep0/q2-0.tgz rep0/q3-0.tgz rep0/q4-0.tgz \
 	rep1/q1-1.tgz rep1/q2-1.tgz rep1/q3-1.tgz rep1/q4-1.tgz
 	@-rm -rf ${D14}
 	@ROOT=${D14} PKG_PATH=${.OBJDIR}/rep0 ${PKG_ADD} q1 q2 q3 q4 q5 q6
-	@ROOT=${D14} PKG_PATH=${.OBJDIR}/rep1 ${PKG_ADD} -x -F update -u 2>&1 |fgrep XXX|fgrep -v @|diff - ${.CURDIR}/list6.out
+	@ROOT=${D14} PKG_PATH=${.OBJDIR}/rep1 ${PKG_ADD} -x -D update -u 2>&1 |fgrep XXX|fgrep -v @|diff - ${.CURDIR}/list6.out
 
 family-circus: rep0/glib-0.tgz rep0/fam-0.tgz rep1/fam-1.tgz rep1/glib-1.tgz rep1/gamin-0.tgz
 	@-rm -rf ${D15}
@@ -149,14 +153,16 @@ loop1: rep0/ocaml-3.11.1.tgz rep0/tcl-8.5.7.tgz rep0/tk-8.5.7.tgz
 	-@ROOT=${D20} PKG_PATH=${.OBJDIR}/rep0 ${PKG_ADD} -z ocaml-3.11.1p0 tcl-8.5.8 tk-8.5.8
 
 plist1:
-	@echo "@owner "`whoami` >$@
+	@echo "@owner "`id -un` >$@
+	@echo "@group "`id -gn` >>$@
 	@echo ${LONG1} >>$@
 	@echo ${LONG2} >>$@
 	@echo ${LONG3} >>$@
 	@echo ${LONG4} >>$@
 
 plist2:
-	@echo "@owner "`whoami` >$@
+	@echo "@owner "`id -un` >$@
+	@echo "@group "`id -gn` >>$@
 	@echo a >>$@
 	@echo b >>$@
 	@echo c >>$@
@@ -164,7 +170,8 @@ plist2:
 	@echo g >>$@
 
 plist3:
-	@echo "@owner "`whoami` >$@
+	@echo "@owner "`id -un` >$@
+	@echo "@group "`id -gn` >>$@
 	@echo a >>$@
 	@echo c >>$@
 	@echo d >>$@
@@ -187,7 +194,8 @@ plist7:
 plist8:
 	@echo "@conflict o-<1" >$@
 	@echo "@pkgpath t/o" >>$@
-	@echo "@owner "`whoami` >>$@
+	@echo "@owner "`id -un` >>$@
+	@echo "@group "`id -gn` >>$@
 	@echo '@lib lib/libcoincoin.so.$${LIBcoincoin_VERSION}' >>$@
 
 plist9:
