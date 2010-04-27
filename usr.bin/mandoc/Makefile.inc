@@ -1,8 +1,8 @@
-# $OpenBSD: Makefile.inc,v 1.1 2009/10/28 03:20:42 schwarze Exp $
+# $OpenBSD: Makefile.inc,v 1.3 2010/04/25 17:15:48 schwarze Exp $
 
 DIFF=diff -au
 MANDOC?=mandoc
-MANDOCOPTS=-fstrict -Wall
+#MANDOCOPTS=-fstrict -Wall
 NROFF=nroff -mandoc
 SED=sed
 SH=/bin/sh
@@ -29,9 +29,11 @@ groff: ${GROFF_TARGETS:C/$/.out_ascii/}
 		${SH} ${.CURDIR}/${*}.sh 
 
 clean:
-	rm -f *.mandoc_ascii
+	rm -f *.mandoc_ascii *.core
 
 groff-clean:
 .if defined(GROFF_TARGETS)
 	rm -f ${GROFF_TARGETS:C/$/.out_ascii/}
 .endif
+
+cleandir: groff-clean clean
