@@ -1,6 +1,6 @@
-#	$OpenBSD: Proc.pm,v 1.2 2011/08/28 13:27:35 bluhm Exp $
+#	$OpenBSD: Proc.pm,v 1.2 2011/09/02 10:45:36 bluhm Exp $
 
-# Copyright (c) 2010 Alexander Bluhm <bluhm@openbsd.org>
+# Copyright (c) 2010,2011 Alexander Bluhm <bluhm@openbsd.org>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -25,17 +25,30 @@ use Time::HiRes qw(time alarm sleep);
 
 my %CHILDREN;
 
+sub kill_children {
+	my @pids = keys %CHILDREN
+	    or return;
+	if (my $sudo = $ENV{SUDO}) {
+		local $?;  # do not modify during END block
+		my @cmd = ($sudo, '/bin/kill', '-TERM', @pids);
+		system(@cmd);
+	} else {
+		kill TERM => @pids;
+	}
+	%CHILDREN = ();
+}
+
 BEGIN {
 	$SIG{TERM} = $SIG{INT} = sub {
 		my $sig = shift;
-		kill TERM => keys %CHILDREN;
+		kill_children();
 		$SIG{TERM} = $SIG{INT} = 'DEFAULT';
 		POSIX::raise($sig);
 	};
 }
 
 END {
-	kill TERM => keys %CHILDREN;
+	kill_children();
 	$SIG{TERM} = $SIG{INT} = 'DEFAULT';
 }
 
@@ -97,6 +110,7 @@ sub wait {
 		$code = "exit: ".   WEXITSTATUS($?) if WIFEXITED($?);
 		$code = "signal: ". WTERMSIG($?)    if WIFSIGNALED($?);
 		$code = "stop: ".   WSTOPSIG($?)    if WIFSTOPPED($?);
+		delete $CHILDREN{$pid} if WIFEXITED($?) || WIFSIGNALED($?);
 		return wantarray ? ($kid, $status, $code) : $kid;
 	}
 	return $kid;
@@ -116,8 +130,8 @@ sub loggrep {
 		}
 		open(my $fh, '<', $self->{logfile})
 		    or die ref($self), " log file open failed: $!";
-		my $match = first { /$regex/ } <$fh>;
-		return $match if $match;
+		my @match = grep { /$regex/ } <$fh>;
+		return wantarray ? @match : $match[0] if @match;
 		close($fh);
 		# pattern not found
 		if ($kid == 0) {
