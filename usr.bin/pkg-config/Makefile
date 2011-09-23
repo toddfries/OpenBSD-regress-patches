@@ -1,4 +1,4 @@
-#	$OpenBSD: Makefile,v 1.22 2011/07/27 12:30:58 jasper Exp $
+#	$OpenBSD: Makefile,v 1.26 2011/09/20 16:26:15 jasper Exp $
 
 REGRESS_TARGETS=cmp-vers1-1 \
 		cmp-vers1-2 \
@@ -41,17 +41,18 @@ REGRESS_TARGETS=cmp-vers1-1 \
 		static-libs2 \
 		static-libs3 \
 		static-libs4 \
-		variable-get \
+		variable-get-1 \
 		variable-set \
-		variable-requires \
 		missing-req-1 \
 		missing-req-2 \
 		missing-req-3 \
 		whitespace-cflags \
 		whitespace-libs \
+		whitespace-linebreak \
 		whitespace-name
 
 PKG_CONFIG=	pkg-config
+#PKG_CONFIG=	/usr/obj/ports/pkgconfig-0.26/fake-i386/usr/local/bin/pkg-config
 WANT=		${.OBJDIR}/$@.want
 GOT=		${.OBJDIR}/$@.got
 
@@ -356,7 +357,7 @@ static-libs4:
 	@diff -u ${WANT} ${GOT}
 
 # Misc. tests
-variable-get:
+variable-get-1:
 	# Test --variable
 	@echo "/tmp" > ${WANT}
 	@PKG_CONFIG_PATH=${.CURDIR}/pcdir/ ${PKG_CONFIG} --errors-to-stdout \
@@ -369,13 +370,6 @@ variable-set:
 	@PKG_CONFIG_PATH=${.CURDIR}/pcdir/ ${PKG_CONFIG} --errors-to-stdout \
 		--print-errors --define-variable=prefix=/usr/local2 \
 		--cflags sysroot > ${GOT}
-	@diff -u ${WANT} ${GOT}
-
-variable-requires:
-	# Test variable expansion in non-variable fields, to multiple values
-	@echo " -lalpha2" > ${WANT}
-	@PKG_CONFIG_PATH=${.CURDIR}/pcdir/ ${PKG_CONFIG} --errors-to-stdout \
-		--print-errors --libs requires-test3 > ${GOT}
 	@diff -u ${WANT} ${GOT}
 
 # This fails as we read and check Requires as well as Requires.private where
@@ -413,6 +407,13 @@ whitespace-libs:
 	@echo "-L/tmp/lib -L/tmp/lib/foo -lbaz\ quux" > ${WANT}
 	@PKG_CONFIG_PATH=${.CURDIR}/pcdir/ ${PKG_CONFIG} --libs \
 		--errors-to-stdout --print-errors whitespace > ${GOT}
+	@diff -u ${WANT} ${GOT}
+
+whitespace-linebreak:
+	# Test linebreak in Description field
+	@echo " -lc" > ${WANT}
+	@PKG_CONFIG_PATH=${.CURDIR}/pcdir/ ${PKG_CONFIG} --errors-to-stdout \
+		--print-errors --libs linebreak > ${GOT}
 	@diff -u ${WANT} ${GOT}
 
 whitespace-name:
