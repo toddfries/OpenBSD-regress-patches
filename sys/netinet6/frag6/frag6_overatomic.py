@@ -1,5 +1,9 @@
 #!/usr/local/bin/python2.7
-# send 2 ping6 fragments with hop-by-hop extension header
+# send ping6 fragment that will overlap the second fragment
+# send atomic fragment with offset=0 and more=0, it must be processed
+
+#      |XXXXXXXX|
+# |-------------|
 
 import os
 from addr import *
@@ -7,13 +11,14 @@ from scapy.all import *
 
 pid=os.getpid()
 payload="ABCDEFGHIJKLOMNO"
+dummy="0123456701234567"
 packet=IPv6(src=SRC_OUT6, dst=DST_IN6)/ICMPv6EchoRequest(id=pid, data=payload)
 frag=[]
-frag.append(IPv6ExtHdrFragment(nh=58, id=pid, m=1)/str(packet)[40:56])
-frag.append(IPv6ExtHdrFragment(nh=58, id=pid, offset=2)/str(packet)[56:64])
+frag.append(IPv6ExtHdrFragment(nh=58, id=pid, offset=1)/dummy)
+frag.append(IPv6ExtHdrFragment(nh=58, id=pid)/str(packet)[40:64])
 eth=[]
 for f in frag:
-	pkt=IPv6(src=SRC_OUT6, dst=DST_IN6)/IPv6ExtHdrHopByHop()/f
+	pkt=IPv6(src=SRC_OUT6, dst=DST_IN6)/f
 	eth.append(Ether(src=SRC_MAC, dst=DST_MAC)/pkt)
 
 if os.fork() == 0:
@@ -37,6 +42,6 @@ for a in ans:
 		if data == payload:
 			exit(0)
 		print "PAYLOAD!=%s" % (payload)
-		exit(1)
+		exit(2)
 print "NO ECHO REPLY"
-exit(2)
+exit(1)

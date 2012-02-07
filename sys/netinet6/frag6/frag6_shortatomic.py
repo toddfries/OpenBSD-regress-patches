@@ -1,5 +1,10 @@
 #!/usr/local/bin/python2.7
-# send 2 ping6 fragments with hop-by-hop extension header
+# send ping6 fragments containig destination option extension header
+# and the same as atomic fragments with missing protocol header
+
+# |-IP-|-Frag-|-ExtDest-|-ICMP6-|-pay|
+# |-- atomic fragment --|
+#                                    |load-|
 
 import os
 from addr import *
@@ -7,13 +12,15 @@ from scapy.all import *
 
 pid=os.getpid()
 payload="ABCDEFGHIJKLOMNO"
-packet=IPv6(src=SRC_OUT6, dst=DST_IN6)/ICMPv6EchoRequest(id=pid, data=payload)
+packet=IPv6(src=SRC_OUT6, dst=DST_IN6)/IPv6ExtHdrDestOpt()/ \
+    ICMPv6EchoRequest(id=pid, data=payload)
 frag=[]
-frag.append(IPv6ExtHdrFragment(nh=58, id=pid, m=1)/str(packet)[40:56])
-frag.append(IPv6ExtHdrFragment(nh=58, id=pid, offset=2)/str(packet)[56:64])
+frag.append(IPv6ExtHdrFragment(nh=60, id=pid, m=1)/str(packet)[40:64])
+frag.append(IPv6ExtHdrFragment(nh=60, id=pid)/str(packet)[40:48])
+frag.append(IPv6ExtHdrFragment(nh=60, id=pid, offset=3)/str(packet)[64:72])
 eth=[]
 for f in frag:
-	pkt=IPv6(src=SRC_OUT6, dst=DST_IN6)/IPv6ExtHdrHopByHop()/f
+	pkt=IPv6(src=SRC_OUT6, dst=DST_IN6)/f
 	eth.append(Ether(src=SRC_MAC, dst=DST_MAC)/pkt)
 
 if os.fork() == 0:
@@ -37,6 +44,6 @@ for a in ans:
 		if data == payload:
 			exit(0)
 		print "PAYLOAD!=%s" % (payload)
-		exit(1)
+		exit(2)
 print "NO ECHO REPLY"
-exit(2)
+exit(1)
