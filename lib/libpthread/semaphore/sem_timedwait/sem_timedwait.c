@@ -1,4 +1,4 @@
-/*	$OpenBSD: sem_wait.c,v 1.3 2012/03/03 09:51:00 guenther Exp $	*/
+/*	$OpenBSD: sem_timedwait.c,v 1.1 2012/03/03 11:08:12 guenther Exp $	*/
 /*
  * Martin Pieuchot <mpi@openbsd.org>, 2011. Public Domain.
  */
@@ -30,8 +30,11 @@ main(int argc, char **argv)
 {
 	pthread_t th;
 	struct sigaction sa;
+	struct timespec ts, ts2;
 
-	CHECKn(sem_wait(&sem));
+	CHECKr(clock_gettime(CLOCK_REALTIME, &ts));
+	ts.tv_sec += 3;
+	CHECKn(sem_timedwait(&sem, &ts));
 	ASSERT(errno == EINVAL);
 
 	CHECKr(sem_init(&sem, 0, 0));
@@ -48,7 +51,7 @@ main(int argc, char **argv)
 	CHECKr(sem_post(&sem));
 	CHECKr(pthread_join(th, NULL));
 
-	/* test that sem_wait() resumes after handling a signal */
+	/* test that sem_timedwait() resumes after handling a signal */
 	memset(&sa, 0, sizeof sa);
 	sa.sa_handler = &handler;
 	sigemptyset(&sa.sa_mask);
@@ -68,6 +71,18 @@ main(int argc, char **argv)
 	CHECKr(sem_post(&sem));
 	CHECKr(pthread_join(th, NULL));
 
+	CHECKr(clock_gettime(CLOCK_REALTIME, &ts));
+	ts.tv_sec += 2;
+	CHECKn(sem_timedwait(&sem, &ts));
+	ASSERT(errno == ETIMEDOUT);
+	CHECKr(clock_gettime(CLOCK_REALTIME, &ts2));
+	if (timespeccmp(&ts, &ts2, < ))
+		timespecsub(&ts2, &ts, &ts);
+	else
+		timespecsub(&ts, &ts2, &ts);
+	CHECKr(clock_getres(CLOCK_REALTIME, &ts2));
+	ASSERT(timespeccmp(&ts, &ts2, < ));
+
 	CHECKe(sem_destroy(&sem));
 
 	SUCCEED;
@@ -77,10 +92,13 @@ void *
 waiter(void *arg)
 {
 	sem_t *semp = arg;
+	struct timespec ts;
 	int value;
 	int r;
 
-	r = sem_wait(semp);
+	CHECKr(clock_gettime(CLOCK_REALTIME, &ts));
+	ts.tv_sec += 3;
+	r = sem_timedwait(semp, &ts);
 	CHECKr(sem_getvalue(semp, &value));
 	if (r == 0) {
 		ASSERT(value == 0);
