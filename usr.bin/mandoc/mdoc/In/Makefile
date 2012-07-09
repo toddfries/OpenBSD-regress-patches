@@ -1,7 +1,5 @@
-# $OpenBSD: Makefile,v 1.2 2011/11/17 16:28:45 schwarze Exp $
+# $OpenBSD: Makefile,v 1.4 2012/07/09 17:52:09 schwarze Exp $
 
-REGRESS_TARGETS=break
-
-SKIP_TMAN ?= break
+REGRESS_TARGETS = break font
 
 .include <bsd.regress.mk>
