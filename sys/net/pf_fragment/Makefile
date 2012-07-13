@@ -1,4 +1,4 @@
-#	$OpenBSD: Makefile,v 1.3 2012/07/08 21:47:49 bluhm Exp $
+#	$OpenBSD: Makefile,v 1.5 2012/07/10 16:58:29 bluhm Exp $
 
 # The following ports must be installed:
 #
@@ -11,7 +11,7 @@
 # SRC is the machine where this makefile is running.
 # PF is running OpenBSD forwarding through pf, it is the test target.
 # RT is a router forwarding packets, maximum MTU is 1300.
-# DST is reflecting the ping and UDP packets.
+# DST is reflecting the ping and UDP echo packets.
 # RDR does not exist, PF redirects the traffic to DST.
 #
 # +---+   1   +--+   2   +--+   3   +---+   4   +---+
@@ -67,12 +67,12 @@ depend: addr.py
 # Create python include file containing the addresses.
 addr.py: Makefile
 	rm -f $@ $@.tmp
-	echo 'SRC_IF = "${SRC_IF}"' >>$@.tmp
-	echo 'SRC_MAC = "${SRC_MAC}"' >>$@.tmp
-	echo 'PF_MAC = "${PF_MAC}"' >>$@.tmp
+	echo 'SRC_IF="${SRC_IF}"' >>$@.tmp
+	echo 'SRC_MAC="${SRC_MAC}"' >>$@.tmp
+	echo 'PF_MAC="${PF_MAC}"' >>$@.tmp
 .for var in SRC_OUT PF_IN PF_OUT RT_IN RT_OUT DST_IN RDR_IN
-	echo '${var} = "${${var}}"' >>$@.tmp
-	echo '${var}6 = "${${var}6}"' >>$@.tmp
+	echo '${var}="${${var}}"' >>$@.tmp
+	echo '${var}6="${${var}6}"' >>$@.tmp
 .endfor
 	mv $@.tmp $@
 
