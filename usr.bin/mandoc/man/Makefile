@@ -1,6 +1,6 @@
-# $OpenBSD: Makefile,v 1.9 2012/07/10 19:53:12 schwarze Exp $
+# $OpenBSD: Makefile,v 1.11 2012/07/18 16:55:54 schwarze Exp $
 
-SUBDIR = nf BI EX HP IP PP RS TH TP
+SUBDIR = BI EX HP IP PP RS TH TP TS nf blank
 
 ascii groff groff-clean obj-clean tman: _SUBDIRUSE
 
