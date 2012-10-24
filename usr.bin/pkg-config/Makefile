@@ -1,4 +1,4 @@
-#	$OpenBSD: Makefile,v 1.32 2012/07/08 07:45:37 espie Exp $
+#	$OpenBSD: Makefile,v 1.35 2012/10/09 09:56:58 jasper Exp $
 
 REGRESS_TARGETS=cmp-vers1-1 \
 		cmp-vers1-2 \
@@ -47,6 +47,7 @@ REGRESS_TARGETS=cmp-vers1-1 \
 		missing-req-1 \
 		missing-req-2 \
 		missing-req-3 \
+		missing-req-4 \
 		whitespace-cflags \
 		whitespace-libs \
 		whitespace-linebreak \
@@ -54,10 +55,9 @@ REGRESS_TARGETS=cmp-vers1-1 \
 		broken-require-1 \
 		broken-require-2
 
-PKG_CONFIG=	pkg-config
+PKG_CONFIG?=	pkg-config
 PCONFIG =	PKG_CONFIG_PATH=${.CURDIR}/pcdir/ ${PKG_CONFIG}
 VPCONFIG =	${PCONFIG} --errors-to-stdout --print-errors > ${GOT}
-#PKG_CONFIG=	/usr/obj/ports/pkgconfig-0.26/fake-i386/usr/local/bin/pkg-config
 WANT=		${.OBJDIR}/$@.want
 GOT=		${.OBJDIR}/$@.got
 
@@ -360,6 +360,12 @@ missing-req-3:
 	# Test for missing packages in Requires (version)
 	@echo "0.0.0" > ${WANT}
 	@${VPCONFIG} --modversion missing-req
+	@diff -u ${WANT} ${GOT}
+
+missing-req-4:
+	# Test for missing Requires.private with --exists
+	@echo "Package nonexisting was not found in the pkg-config search path" > ${WANT}
+	@if ${VPCONFIG} --exists missing-req2 ; then false; fi
 	@diff -u ${WANT} ${GOT}
 
 whitespace-cflags:
