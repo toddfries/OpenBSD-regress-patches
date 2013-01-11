@@ -1,4 +1,4 @@
-#	$OpenBSD: Makefile,v 1.3 2012/11/28 00:40:36 bluhm Exp $
+#	$OpenBSD: Makefile,v 1.5 2013/01/04 14:01:49 bluhm Exp $
 
 # The following ports must be installed for the regression tests:
 # p5-IO-Socket-INET6	object interface for AF_INET and AF_INET6 domain sockets
@@ -8,7 +8,17 @@
 ARGS !=			cd ${.CURDIR} && ls args-*.pl
 TARGETS ?=		${ARGS}
 REGRESS_TARGETS =	${TARGETS:S/^/run-regress-/}
-CLEANFILES =		*.log *.pem relayd.conf ktrace.out
+CLEANFILES =		*.log *.pem relayd.conf ktrace.out stamp-*
+
+# Fill out these variables if you want to test relayd with
+# the relayd process running on a remote machine.  You have to specify
+# a local and remote ip address for the tcp connections.  To control
+# the remote machine you need a hostname for ssh to log in.  All the
+# test files must be in the same directory local and remote.
+
+LOCAL_ADDR ?=
+REMOTE_ADDR ?=
+REMOTE_SSH ?=
 
 # Set variables so that make runs with and without obj directory.
 # Only do that if necessary to keep visible output short.
@@ -26,9 +36,17 @@ PERLPATH =	${.CURDIR}/
 
 .for a in ${ARGS}
 run-regress-$a: $a
+.if empty (REMOTE_SSH)
 	time SUDO=${SUDO} KTRACE=${KTRACE} RELAYD=${RELAYD} perl ${PERLINC} ${PERLPATH}relayd.pl copy ${PERLPATH}$a
 	time SUDO=${SUDO} KTRACE=${KTRACE} RELAYD=${RELAYD} perl ${PERLINC} ${PERLPATH}relayd.pl splice ${PERLPATH}$a
+.else
+	ssh -t q0 ${SUDO} true
+	time SUDO=${SUDO} KTRACE=${KTRACE} RELAYD=${RELAYD} perl ${PERLINC} ${PERLPATH}remote.pl copy ${LOCAL_ADDR} ${REMOTE_ADDR} ${REMOTE_SSH} ${PERLPATH}$a
+	time SUDO=${SUDO} KTRACE=${KTRACE} RELAYD=${RELAYD} perl ${PERLINC} ${PERLPATH}remote.pl splice ${LOCAL_ADDR} ${REMOTE_ADDR} ${REMOTE_SSH} ${PERLPATH}$a
+.endif
 .endfor
+
+# create the certificates for SSL
 
 /etc/ssl/127.0.0.1.crt:
 	${SUDO} openssl req -batch -new -nodes -newkey rsa -keyout /etc/ssl/private/127.0.0.1.key -subj /CN=127.0.0.1/ -x509 -out $@
@@ -38,5 +56,17 @@ server-cert.pem:
 
 ${REGRESS_TARGETS:M*ssl*} ${REGRESS_TARGETS:M*https*}: \
     /etc/ssl/127.0.0.1.crt server-cert.pem
+
+# make perl syntax check for all args files
+
+.PHONY: syntax
+
+syntax: stamp-syntax
+
+stamp-syntax: ${ARGS}
+.for a in ${ARGS}
+	@perl -c ${PERLPATH}$a
+.endfor
+	@date >$@
 
 .include <bsd.regress.mk>
