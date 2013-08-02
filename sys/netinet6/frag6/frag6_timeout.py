@@ -1,22 +1,27 @@
 #!/usr/local/bin/python2.7
-# send ping6 fragment that overlaps the last fragment with the tail
+# send 6 non-overlapping ping6 fragments in 75 seconds, timeout is 60
 
-#          |----|
-#      |XXXXXXXX|
-# |--------|
+# |----|
+#      |----|
+#           |----|
+#                |----|
+#                     |----|      <--- timeout
+#                          |----|
 
 import os
 from addr import *
 from scapy.all import *
 
 pid=os.getpid()
-payload="ABCDEFGHIJKLMNOP"
-dummy="0123456701234567"
+payload="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcd"
 packet=IPv6(src=SRC_OUT6, dst=DST_IN6)/ICMPv6EchoRequest(id=pid, data=payload)
 frag=[]
-frag.append(IPv6ExtHdrFragment(nh=58, id=pid, offset=2)/str(packet)[56:64])
-frag.append(IPv6ExtHdrFragment(nh=58, id=pid, offset=1)/dummy)
-frag.append(IPv6ExtHdrFragment(nh=58, id=pid, m=1)/str(packet)[40:56])
+frag.append(IPv6ExtHdrFragment(nh=58, id=pid, m=1)/str(packet)[40:48])
+frag.append(IPv6ExtHdrFragment(nh=58, id=pid, offset=1, m=1)/str(packet)[48:56])
+frag.append(IPv6ExtHdrFragment(nh=58, id=pid, offset=2, m=1)/str(packet)[56:64])
+frag.append(IPv6ExtHdrFragment(nh=58, id=pid, offset=3, m=1)/str(packet)[64:72])
+frag.append(IPv6ExtHdrFragment(nh=58, id=pid, offset=4, m=1)/str(packet)[72:80])
+frag.append(IPv6ExtHdrFragment(nh=58, id=pid, offset=5)/str(packet)[80:88])
 eth=[]
 for f in frag:
 	pkt=IPv6(src=SRC_OUT6, dst=DST_IN6)/f
@@ -24,10 +29,12 @@ for f in frag:
 
 if os.fork() == 0:
 	time.sleep(1)
-	sendp(eth, iface=SRC_IF)
+	for e in eth:
+		sendp(e, iface=SRC_IF)
+		time.sleep(15)
 	os._exit(0)
 
-ans=sniff(iface=SRC_IF, timeout=3, filter=
+ans=sniff(iface=SRC_IF, timeout=90, filter=
     "ip6 and src "+DST_IN6+" and dst "+SRC_OUT6+" and icmp6")
 for a in ans:
 	if a and a.type == scapy.layers.dot11.ETHER_TYPES.IPv6 and \

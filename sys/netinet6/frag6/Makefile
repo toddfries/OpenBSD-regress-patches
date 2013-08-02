@@ -1,4 +1,4 @@
-#	$OpenBSD: Makefile,v 1.6 2012/02/08 00:35:31 bluhm Exp $
+#	$OpenBSD: Makefile,v 1.8 2013/07/23 22:38:45 bluhm Exp $
 
 # The following ports must be installed:
 #
@@ -165,6 +165,13 @@ run-regress-frag6-udppayload: addr.py
 	@echo '\n======== $@ ========'
 	@echo Check ping6 udp payload fragment
 	${SUDO} python2.7 frag6_udppayload.py
+
+# fragmented icmp packet not within 60 second timeout, test takes 90 seconds
+TARGETS +=	frag6-timeout
+run-regress-frag6-timeout: addr.py
+	@echo '\n======== $@ ========'
+	@echo Check ping6 fragment timeout
+	${SUDO} python2.7 frag6_timeout.py
 
 REGRESS_TARGETS =	${TARGETS:S/^/run-regress-/}
 
