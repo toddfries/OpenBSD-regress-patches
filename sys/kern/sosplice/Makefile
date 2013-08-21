@@ -1,11 +1,9 @@
-#	$OpenBSD: Makefile,v 1.3 2013/08/01 21:26:30 kettenis Exp $
+#	$OpenBSD: Makefile,v 1.5 2013/08/09 19:51:11 bluhm Exp $
 
-SUBDIR +=	perf
-
-.if defined(REGRESS_FULL)
+SUBDIR =
 SUBDIR +=	error
 SUBDIR +=	tcp
 SUBDIR +=	udp
-.endif
+SUBDIR +=	perf
 
 .include <bsd.subdir.mk>
