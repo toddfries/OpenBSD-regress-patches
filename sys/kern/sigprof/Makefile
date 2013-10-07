@@ -1,6 +1,6 @@
-#	$OpenBSD: Makefile,v 1.2 2013/10/07 05:28:47 jsing Exp $
+#	$OpenBSD: Makefile,v 1.1 2013/10/07 15:52:18 jsing Exp $
 
-PROG=		main-thread-exited
+PROG=		sigprof
 
 LIBPTHREAD=	/usr/lib/libpthread.a
 
