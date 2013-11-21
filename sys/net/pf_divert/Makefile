@@ -1,4 +1,4 @@
-#	$OpenBSD: Makefile,v 1.4 2013/08/11 21:49:04 bluhm Exp $
+#	$OpenBSD: Makefile,v 1.7 2013/11/03 14:03:35 bluhm Exp $
 
 # The following ports must be installed for the regression tests:
 # p5-IO-Socket-INET6	object interface for AF_INET and AF_INET6 domain sockets
@@ -48,9 +48,18 @@ regress:
 # Automatically generate regress targets from test cases in directory.
 
 ARGS !=			cd ${.CURDIR} && ls args-*.pl
-TARGETS ?=		${ARGS}
+TARGETS ?=		inet-args-tcp-to inet6-args-tcp-to \
+			inet-args-tcp-reply inet6-args-tcp-reply \
+			inet-args-udp-to inet6-args-udp-to \
+			inet-args-udp-reply inet6-args-udp-reply \
+			inet-args-rip-to inet6-args-rip-to \
+			inet-args-rip-reply inet6-args-rip-reply \
+			inet-args-icmp-to inet6-args-icmp-to \
+			inet-reuse-tcp inet6-reuse-tcp \
+			inet-reuse-udp inet6-reuse-udp \
+			inet-reuse-rip inet6-reuse-rip
 REGRESS_TARGETS =	${TARGETS:S/^/run-regress-/}
-CLEANFILES +=		*.log ktrace.out stamp-*
+CLEANFILES +=		*.log *.port ktrace.out stamp-*
 
 .MAIN: all
 
@@ -87,21 +96,51 @@ PERLPATH =	${.CURDIR}/
 # diverted process is running on the remote machine reachable with
 # ssh.
 
+.for inet addr in inet ADDR inet6 ADDR6
+
 .for a in ${ARGS}
-run-regress-$a: $a
-.if !empty (LOCAL_ADDR)
+run-regress-${inet}-${a:R}: ${a}
 	@echo
-	time ${SUDO} SUDO=${SUDO} perl ${PERLINC} ${PERLPATH}remote.pl inet ${LOCAL_ADDR} ${FAKE_ADDR} ${REMOTE_SSH} ${PERLPATH}$a
-.endif
-.if !empty (LOCAL_ADDR6)
+	@echo $@
+	time ${SUDO} SUDO=${SUDO} perl ${PERLINC} ${PERLPATH}remote.pl ${inet} ${LOCAL_${addr}} ${FAKE_${addr}} ${REMOTE_SSH} ${PERLPATH}${a}
+.endfor
+
+.for proto in tcp udp rip
+run-regress-${inet}-reuse-${proto}:
 	@echo
-	time ${SUDO} SUDO=${SUDO} perl ${PERLINC} ${PERLPATH}remote.pl inet6 ${LOCAL_ADDR6} ${FAKE_ADDR6} ${REMOTE_SSH} ${PERLPATH}$a
+	@echo $@
+	time ${SUDO} SUDO=${SUDO} perl ${PERLINC} ${PERLPATH}remote.pl ${inet} ${LOCAL_${addr}} ${FAKE_${addr}} ${REMOTE_SSH} ${PERLPATH}args-${proto}-reply.pl
+	sed -n '/^connect peer:/s/.* //p' client.log >client.port
+	sed -n '/^connect sock:/s/.* //p' client.log >server.port
+.if "tcp" == ${proto}
+	${SUDO} tcpdrop ${LOCAL_${addr}} `cat client.port` ${FAKE_${addr}} `cat server.port`
 .endif
+	time ${SUDO} SUDO=${SUDO} perl ${PERLINC} ${PERLPATH}remote.pl ${inet} ${LOCAL_${addr}} ${FAKE_${addr}} ${REMOTE_SSH} `cat client.port` `cat server.port` ${PERLPATH}args-${proto}-to.pl
+.if "rip" == ${proto}
+	if ssh ${REMOTE_SSH} ${SUDO} pfctl -ss | \
+	    grep 'all 254 ${FAKE_${addr}} .. ${LOCAL_${addr}} '; \
+		then false; \
+	fi
+.else
+.if "inet" == ${inet}
+	if ssh ${REMOTE_SSH} ${SUDO} pfctl -ss | \
+	    grep 'all ${proto} ${FAKE_${addr}}:'`cat server.port`' .. ${LOCAL_${addr}}:'`cat client.port`' '; \
+		then false; \
+	fi
+.else
+	if ssh ${REMOTE_SSH} ${SUDO} pfctl -ss | \
+	    grep 'all ${proto} ${FAKE_${addr}}\['`cat server.port`\]' .. ${LOCAL_${addr}}\['`cat client.port`'\] '; \
+		then false; \
+	fi
+.endif
+.endif
+.endfor
+
 .endfor
 
 # make perl syntax check for all args files
 
-.PHONY: syntax
+.PHONY: syntax check-setup
 
 syntax: stamp-syntax
 
@@ -110,5 +149,19 @@ stamp-syntax: ${ARGS}
 	@perl -c ${PERLPATH}$a
 .endfor
 	@date >$@
+
+# Check wether the address, route and remote setup is correct
+check-setup:
+	ping -n -c 1 ${LOCAL_ADDR}
+	ping -n -c 1 ${REMOTE_ADDR}
+	ping6 -n -c 1 ${LOCAL_ADDR6}
+	ping6 -n -c 1 ${REMOTE_ADDR6}
+	route get -inet ${FAKE_ADDR} | grep 'if address: ${LOCAL_ADDR}$$'
+	route get -inet ${FAKE_ADDR} | grep 'gateway: ${REMOTE_ADDR}$$'
+	route get -inet6 ${FAKE_ADDR6} | grep 'if address: ${LOCAL_ADDR6}$$'
+	route get -inet6 ${FAKE_ADDR6} | grep 'gateway: ${REMOTE_ADDR6}$$'
+	ssh ${REMOTE_SSH} ${SUDO} pfctl -sr | grep '^anchor "regress" all$$'
+	ssh ${REMOTE_SSH} ${SUDO} pfctl -si | grep '^Status: Enabled '
+	ssh ${REMOTE_SSH} perl -MIO::Socket::INET6 -MIO::Socket::INET6 -e 1
 
 .include <bsd.regress.mk>
