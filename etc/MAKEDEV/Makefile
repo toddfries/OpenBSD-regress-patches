@@ -1,9 +1,9 @@
 
-# $OpenBSD: Makefile,v 1.27 2012/06/20 18:45:44 matthew Exp $
+# $OpenBSD: Makefile,v 1.29 2014/04/18 14:34:24 henning Exp $
 
-MAKEDEVARCHS+=alpha amd64 armish aviion hp300 hppa hppa64 i386 landisk
-MAKEDEVARCHS+=loongson luna88k macppc mvme68k
-MAKEDEVARCHS+=mvme88k sgi socppc sparc sparc64 vax zaurus
+MAKEDEVARCHS+=alpha amd64 armish aviion hppa hppa64 i386 landisk
+MAKEDEVARCHS+=loongson luna88k macppc
+MAKEDEVARCHS+=sgi socppc sparc sparc64 vax zaurus
 
 MAKEDEVTARGS?=all ramdisk
 
@@ -28,7 +28,7 @@ ${REGRESS_TARGETS}:
 	@cd test.${_T}.${.TARGET}; \
 	time ${SUDO} sh ./MAKEDEV ${_T} || true; \
 	time ${SUDO} sh ./MAKEDEV ${_T} || true; \
-	( ls -ln; ls -ln fd/; ls -ln altq/ ) 2> /dev/null | \
+	( ls -ln; ls -ln fd/ ) 2> /dev/null | \
 		awk '/^[bcps]/ {printf "%s %x.%x %x,%x%s\n",$$1,$$3,$$4,$$5,$$6,$$10} \
 		     /^l/      {printf "%s %s.%s%s>%s\n",$$1,$$3,$$4,$$9,$$11}' | \
 		sort +5 -n | \
