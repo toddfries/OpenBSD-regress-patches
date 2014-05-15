@@ -1,4 +1,4 @@
-/*	$OpenBSD	*/
+/*	$OpenBSD: fuzz.c,v 1.3 2014/05/02 09:41:32 andre Exp $	*/
 /*
  * Copyright (c) 2011 Damien Miller <djm@mindrot.org>
  *
@@ -168,7 +168,7 @@ fuzz_dump(struct fuzz *fuzz)
 }
 
 struct fuzz *
-fuzz_begin(u_int strategies, void *p, size_t l)
+fuzz_begin(u_int strategies, const void *p, size_t l)
 {
 	struct fuzz *ret = calloc(sizeof(*ret), 1);
 
