@@ -5,7 +5,6 @@ my %header = ("X-Test-Header" => "XOriginalValue");
 our %args = (
     client => {
 	func => \&http_client,
-	nocheck => 1,
 	loggrep => {
 		qr/X-Test-Header: XChangedValue/ => 1,
 		qr/Host: foo.bar/ => 1,
@@ -13,8 +12,8 @@ our %args = (
     },
     relayd => {
 	protocol => [ "http",
-	    'request header change "Host" to "foobar.changed"',
-	    'response header change "X-Test-Header" to "XChangedValue"',
+	    'match request header set "Host" value "foobar.changed"',
+	    'match response header set "X-Test-Header" value "XChangedValue"',
 	],
     },
     server => {

@@ -10,16 +10,17 @@ our %args = (
 	    qr/Server: OpenBSD relayd/,
 	    qr/Connection: close/,
 	],
+	nocheck => 1,
 	httpnok => 1,
     },
     relayd => {
 	protocol => [ "http",
 	    'return error',
-	    'url filter digest 0ac8ccfc03317891ae2820de10ee2167d31ebd16 log',
+	    'block request url log digest 0ac8ccfc03317891ae2820de10ee2167d31ebd16',
 	],
 	loggrep => {
-	    qr/rejecting request \(403 Forbidden\)/ => 1,
-	    qr/\[0ac8ccfc03317891ae2820de10ee2167d31ebd16:/ => 1,
+	    qr/Forbidden \(403 Forbidden\)/ => 1,
+	    qr/\[0ac8ccfc03317891ae2820de10ee2167d31ebd16\]/ => 1,
 	},
     },
     server => {

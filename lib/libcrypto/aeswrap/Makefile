@@ -1,12 +1,9 @@
-#	$OpenBSD: Makefile,v 1.1 2014/04/22 21:27:15 miod Exp $
+#	$OpenBSD: Makefile,v 1.4 2014/07/08 15:53:52 jsing Exp $
 
 PROG=	aes_wrap
-CRYPTO=	${.CURDIR}/../../../../lib/libssl/src/crypto
-CFLAGS+=	-DAES_WRAP_TEST
-CFLAGS+=	-I${CRYPTO} -I${CRYPTO}/aes
-.PATH:	${CRYPTO}/aes
-
 LDADD=	-lcrypto
 DPADD=	${LIBCRYPTO}
+WARNINGS=	Yes
+CFLAGS+=	-DLIBRESSL_INTERNAL -Werror
 
 .include <bsd.regress.mk>

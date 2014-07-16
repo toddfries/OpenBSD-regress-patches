@@ -1,7 +1,9 @@
-#	$OpenBSD: Makefile,v 1.1.1.1 2014/04/15 18:01:17 miod Exp $
+#	$OpenBSD: Makefile,v 1.3 2014/07/08 15:53:53 jsing Exp $
 
 PROG=	rc2test
 LDADD=	-lcrypto
 DPADD=	${LIBCRYPTO}
+WARNINGS=	Yes
+CFLAGS+=	-DLIBRESSL_INTERNAL -Werror
 
 .include <bsd.regress.mk>

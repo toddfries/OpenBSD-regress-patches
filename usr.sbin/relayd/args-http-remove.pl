@@ -15,9 +15,10 @@ our %args = (
     },
     relayd => {
 	protocol => [ "http",
-	    'response header remove X-Header-Foo log',
+	    'match response header remove X-Header-Foo',
+	    'match response header log "*Foo"',
 	],
-	loggrep => { qr/done, \[X-Header-Foo: foo\s*\]/ => 1 },
+	loggrep => { qr/ (?:done|last write \(done\)), GET \{X-Header-Foo: foo \(removed\)\s*\};/ => 1 },
     },
     server => {
 	func => \&http_server,

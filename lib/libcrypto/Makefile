@@ -1,12 +1,15 @@
-#	$OpenBSD: Makefile,v 1.9 2014/05/14 14:46:35 jsing Exp $
+#	$OpenBSD: Makefile,v 1.16 2014/07/11 20:37:59 miod Exp $
 
 SUBDIR= \
+	aead \
 	aeswrap \
 	base64 \
 	bf \
+	bio \
 	bn \
 	cast \
 	chacha \
+	cts128 \
 	des \
 	dh \
 	dsa \
@@ -23,6 +26,8 @@ SUBDIR= \
 	md4 \
 	md5 \
 	mdc2 \
+	pbkdf2 \
+	pkcs7 \
 	poly1305 \
 	pqueue \
 	rand \
@@ -31,7 +36,10 @@ SUBDIR= \
 	rmd \
 	sha \
 	sha1 \
-	sha2
+	sha2 \
+	sha256 \
+	sha512 \
+	utf8
 
 install:
 

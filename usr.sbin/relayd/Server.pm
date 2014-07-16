@@ -1,4 +1,4 @@
-#	$OpenBSD: Server.pm,v 1.4 2013/07/20 10:30:55 bluhm Exp $
+#	$OpenBSD: Server.pm,v 1.6 2014/07/10 10:19:06 bluhm Exp $
 
 # Copyright (c) 2010-2012 Alexander Bluhm <bluhm@openbsd.org>
 #
@@ -57,6 +57,10 @@ sub new {
 
 sub child {
 	my $self = shift;
+
+	# in case we redo the accept, shutdown the old one
+	shutdown(\*STDOUT, SHUT_WR);
+	delete $self->{as};
 
 	my $iosocket = $self->{ssl} ? "IO::Socket::SSL" : "IO::Socket::INET6";
 	my $as = $self->{ls}->accept()

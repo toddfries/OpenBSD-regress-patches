@@ -1,4 +1,4 @@
-#	$OpenBSD: Makefile,v 1.8 2014/01/08 23:42:23 bluhm Exp $
+#	$OpenBSD: Makefile,v 1.10 2014/07/12 21:00:46 bluhm Exp $
 
 # The following ports must be installed for the regression tests:
 # p5-IO-Socket-INET6	object interface for AF_INET and AF_INET6 domain sockets
@@ -26,6 +26,8 @@ regress:
 # local and remote.
 # You must have an anchor "regress" for the divert rules in the pf.conf
 # of the remote machine.  The kernel of the remote machine gets testet.
+#
+# Run make check-setup to see if you got the setup correct.
 
 LOCAL_ADDR ?=
 REMOTE_ADDR ?=
@@ -100,15 +102,13 @@ PERLPATH =	${.CURDIR}/
 
 .for a in ${ARGS}
 run-regress-${inet}-${a:R}: ${a}
-	@echo
-	@echo $@
+	@echo '\n======== $@ ========'
 	time ${SUDO} SUDO=${SUDO} perl ${PERLINC} ${PERLPATH}remote.pl ${inet} ${LOCAL_${addr}} ${FAKE_${addr}} ${REMOTE_SSH} ${PERLPATH}${a}
 .endfor
 
 .for proto in tcp udp rip
 run-regress-${inet}-reuse-${proto}:
-	@echo
-	@echo $@
+	@echo '\n======== $@ ========'
 	time ${SUDO} SUDO=${SUDO} perl ${PERLINC} ${PERLPATH}remote.pl ${inet} ${LOCAL_${addr}} ${FAKE_${addr}} ${REMOTE_SSH} ${PERLPATH}args-${proto}-reply.pl
 	sed -n '/^connect peer:/s/.* //p' client.log >client.port
 	sed -n '/^connect sock:/s/.* //p' client.log >server.port
@@ -147,6 +147,7 @@ stamp-syntax: ${ARGS}
 
 # Check wether the address, route and remote setup is correct
 check-setup:
+	@echo '\n======== $@ ========'
 	ping -n -c 1 ${LOCAL_ADDR}
 	ping -n -c 1 ${REMOTE_ADDR}
 	ping6 -n -c 1 ${LOCAL_ADDR6}
